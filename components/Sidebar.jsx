@@ -18,7 +18,7 @@ function Sidebar() {
     }
   }, [session, spotifyApi]);
   return (
-      <div className='text-gray-500 p-5 text-xs lg:text-sm border-r border-gray-900 space-y-4 overflow-y-scroll h-screen scrollbar-hide sm:max-w-[12rem] lg:max-w-[15rem] hidden md:block lg:block'>
+      <div className='text-gray-500 p-5 text-xs lg:text-sm border-r border-gray-900 space-y-4 overflow-y-scroll h-screen scrollbar-hide sm:max-w-[12rem] lg:max-w-[15rem] hidden md:block lg:block pb-36'>
         <button className='flex space-x-2 items-center hover:text-white duration-300'>
           <HomeIcon className='w-[24px] h-[24px]'/>
           <p>Home</p>

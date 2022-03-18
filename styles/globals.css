@@ -1,3 +1,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: 'Gotham';
+  src: url(./fonts/CircularStd-Book.otf);
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Gotham';
+  src: url(./fonts/CircularStd-Light.otf);
+  font-weight: 300;
+}
+@font-face {
+  font-family: 'Gotham';
+  src: url(./fonts/CircularStd-Medium.otf);
+  font-weight: 600;
+}
+@font-face {
+  font-family: 'Gotham';
+  src: url(./fonts/CircularStd-Bold.otf);
+  font-weight: 700;
+}
+@layer components {
+  .button {
+    @apply h-5 w-5 transform cursor-pointer transition duration-300 ease-in-out hover:scale-125;
+  }
+}
+* {
+  font-family: 'Gotham', sans-serif;
+}
