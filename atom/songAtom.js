@@ -1,7 +1,7 @@
 import { atom } from 'recoil'
 
 export const currentTrackIdState = atom({
-  key: 'currenttrackIdState',
+  key: 'currentIdState',
   default: null,
 })
 
