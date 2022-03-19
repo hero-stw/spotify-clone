@@ -15,6 +15,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/_app.js", "components/icons/Switch.jsx", "components/icons/Previous.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/_app.tsx", "components/icons/Switch.jsx", "components/icons/Previous.jsx", "pages/index.jsx"],
   "exclude": ["node_modules"]
 }
