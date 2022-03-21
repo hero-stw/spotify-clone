@@ -10,6 +10,6 @@ export async function middleware(req) {
     return NextResponse.next()
   }
   if (!token && pathname !== '/login') {
-    return NextResponse.redirect('http://hungpaph13384.xyz/login')
+    return NextResponse.redirect('http://localhost:3000/login')
   }
 }
