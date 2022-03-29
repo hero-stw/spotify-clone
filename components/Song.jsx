@@ -1,3 +1,4 @@
+import { HeartIcon } from '@heroicons/react/solid'
 import React from 'react'
 import { useRecoilState } from 'recoil'
 import { currentTrackIdState, isPlayingState } from '../atom/songAtom'
@@ -36,7 +37,11 @@ function Song({ order, track }) {
       </div>
       <div className="ml-auto flex items-center justify-between md:ml-0">
         <p className="hidden w-40 md:inline ">{track.track.album.name}</p>
-        <p className="">{millisToMinutesAndSeconds(track.track.duration_ms)}</p>
+
+        <div className="flex items-center justify-between space-x-4">
+          <HeartIcon className="h-5 w-5 text-green-500" />
+          <p>{millisToMinutesAndSeconds(track.track.duration_ms)}</p>
+        </div>
       </div>
     </div>
   )

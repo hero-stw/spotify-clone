@@ -8,6 +8,7 @@ import {
 } from '@heroicons/react/outline'
 import { HeartIcon } from '@heroicons/react/solid'
 import { useSession } from 'next-auth/react'
+import Link from 'next/link'
 import useSpotify from '../hooks/useSpotify'
 import { playlistIdState } from '../atom/playlistAtom'
 import { useRecoilState } from 'recoil'
@@ -26,14 +27,18 @@ function Sidebar() {
   }, [session, spotifyApi])
   return (
     <div className="hidden h-screen space-y-4 overflow-y-scroll border-r border-gray-900 p-5 pb-36 text-xs text-gray-500 scrollbar-hide sm:max-w-[12rem] md:block lg:block lg:max-w-[15rem] lg:text-sm">
-      <button className="flex items-center space-x-2 duration-300 hover:text-white">
-        <HomeIcon className="h-[24px] w-[24px]" />
-        <p>Home</p>
-      </button>
-      <button className="flex items-center space-x-2 duration-300 hover:text-white">
-        <SearchIcon className="h-[24px] w-[24px]" />
-        <p>Search</p>
-      </button>
+      <Link href={'/'} className="duration-300 hover:text-white">
+        <div className="flex items-center space-x-2">
+          <HomeIcon className="h-[24px] w-[24px]" />
+          <span>Home</span>
+        </div>
+      </Link>
+      <Link href={'/search'} className="duration-300 hover:text-white">
+        <div className="flex items-center space-x-2">
+          <SearchIcon className="h-[24px] w-[24px]" />
+          <span>Search</span>
+        </div>
+      </Link>
       <button className="flex items-center space-x-2 duration-300 hover:text-white">
         <LibraryIcon className="h-[24px] w-[24px]" />
         <p>Your Collection</p>
