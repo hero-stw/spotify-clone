@@ -21,6 +21,8 @@ function Player() {
     useRecoilState(currentTrackIdState)
   const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState)
   const [volume, setVolume] = useState(50)
+  const [player, setPlayer] = useState(undefined)
+  const [is_active, setActive] = useState(false)
   const songInfo = useSongInfomation()
 
   const fetchCurrentSong = () => {
@@ -63,6 +65,47 @@ function Player() {
       debouncedAdjustVolume(volume)
     }
   }, [volume])
+
+  useEffect(() => {
+    const script = document.createElement('script')
+    script.src = 'https://sdk.scdn.co/spotify-player.js'
+    script.async = true
+
+    document.body.appendChild(script)
+
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      const player = new window.Spotify.Player({
+        name: 'Web Playback SDK',
+        getOAuthToken: (cb) => cb(session.user?.accessToken),
+        volume: 0.5,
+      })
+
+      setPlayer(player)
+
+      player.addListener('ready', ({ device_id }) => {
+        console.log('Ready with Device ID', device_id)
+      })
+
+      player.addListener('not_ready', ({ device_id }) => {
+        console.log('Device ID has gone offline', device_id)
+      })
+
+      player.addListener('player_state_changed', (state) => {
+        if (!state) {
+          return
+        }
+
+        setCurrentIdTrack(state.track_window.current_track)
+        setIsPlaying(data.body?.is_playing)
+
+        player.getCurrentState().then((state) => {
+          !state ? setActive(false) : setActive(true)
+        })
+      })
+
+      player.connect()
+    }
+  }, [])
   return (
     <div className="grid h-24 grid-cols-3 bg-gradient-to-br from-black to-gray-800 px-2 text-xs text-white opacity-95 md:px-8 md:text-base">
       <div className="flex items-center space-x-4">
@@ -85,7 +128,7 @@ function Player() {
         <div className="mx-auto flex items-center">
           <div className="flex space-x-6">
             <Switch />
-            <Previous />
+            <Previous onClick />
           </div>
           <div>
             <button

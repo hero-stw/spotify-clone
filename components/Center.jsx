@@ -7,6 +7,7 @@ import { shuffle } from 'lodash'
 import { playlistIdState, playlistState } from '../atom/playlistAtom'
 import { useRecoilState } from 'recoil'
 import useSpotify from '../hooks/useSpotify'
+import Link from 'next/link'
 
 const colors = [
   'from-indigo-500',
@@ -24,7 +25,7 @@ const Center = () => {
   const [color, setColor] = useState()
   const [playlist, setPlaylist] = useRecoilState(playlistState)
   const [playlistId, setPlaylistId] = useRecoilState(playlistIdState)
-
+  const [isActive, setActive] = useState(false)
   useEffect(() => {
     setColor(shuffle(colors).pop())
   }, [playlistId])
@@ -40,39 +41,80 @@ const Center = () => {
           console.log(error)
         })
     }
-    spotifyApi
-      .getMySavedAlbums({
-        limit: 1,
-        offset: 0,
-      })
-      .then(
-        function (data) {
-          // Output items
-          console.log(data.body.items)
-        },
-        function (err) {
-          console.log('Something went wrong!', err)
-        }
-      )
   }, [spotifyApi, playlistId])
+
+  const getNewReleases = async () => {
+    const response = await spotifyApi.getNewReleases()
+    console.log(response)
+  }
+  useEffect(() => {
+    getNewReleases()
+  })
+
   return (
     <div className="relative h-screen flex-grow overflow-y-scroll scrollbar-hide">
       <header className="absolute top-5 right-8">
         <div
           className="flex cursor-pointer items-center space-x-3 rounded-full bg-black p-1 pr-2 opacity-90 hover:opacity-80"
-          onClick={signOut}
+          onClick={() => setActive(!isActive)}
         >
           <img
             className="h-10 w-10 rounded-full border-[0.1px] border-solid border-gray-400 object-cover"
             src={
               session?.user.image
                 ? session?.user.image
-                : 'https://openclipart.org/download/247319/abstract-user-flat-3.svg'
+                : 'https://www.shoptiu.com/upload/users/user-avatar.png'
             }
             alt=""
           />
           <h2 className="text-white">{session?.user.name}</h2>
           <ChevronDownIcon className="h5 w-5 text-white" />
+        </div>
+        <div
+          id="dropdown"
+          className={`z-10  ${
+            isActive ? 'block' : 'hidden'
+          } w-full divide-y divide-gray-100 rounded bg-white shadow dark:bg-gray-700`}
+        >
+          <ul
+            className="py-1 text-sm text-gray-700 dark:text-gray-200"
+            aria-labelledby="dropdownDefault"
+          >
+            <li>
+              <Link href={'/dashboard'}>
+                <div
+                  href="/dashboard"
+                  className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  Dashboard
+                </div>
+              </Link>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+              >
+                Settings
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+              >
+                Earnings
+              </a>
+            </li>
+            <li>
+              <button
+                className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                onClick={() => signOut()}
+              >
+                Sign out
+              </button>
+            </li>
+          </ul>
         </div>
       </header>
       <section
