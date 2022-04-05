@@ -1,7 +1,24 @@
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import React from 'react'
+import { register } from './api/axios/auth'
 
 const Register = () => {
+  const router = useRouter()
+  const [name, setName] = React.useState('')
+  const [email, setEmail] = React.useState('')
+  const [password, setPassword] = React.useState('')
+  const onSubmit = async () => {
+    const data = {
+      name,
+      email,
+      password,
+    }
+    const response = await register(data)
+    if (response.status === 200) {
+      router.push('/dashboard')
+    }
+  }
   return (
     <div className="max-w-500px mx-auto grid h-screen place-content-center text-center ">
       <div className="over-hidden max-h-screen bg-white dark:bg-gray-900 ">
@@ -22,6 +39,22 @@ const Register = () => {
                 <form>
                   <div>
                     <label
+                      htmlFor="name"
+                      className="mb-2 block text-left text-sm text-gray-600 dark:text-gray-200"
+                    >
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      placeholder="John Doe"
+                      className="mt-2 block w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-gray-700 placeholder-gray-400 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:placeholder-gray-600 dark:focus:border-blue-400"
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </div>
+                  <div className="mt-6">
+                    <label
                       htmlFor="email"
                       className="mb-2 block text-left text-sm text-gray-600 dark:text-gray-200"
                     >
@@ -33,6 +66,7 @@ const Register = () => {
                       id="email"
                       placeholder="example@example.com"
                       className="mt-2 block w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-gray-700 placeholder-gray-400 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-400 focus:ring-opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:placeholder-gray-600 dark:focus:border-blue-400"
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
 
@@ -58,11 +92,16 @@ const Register = () => {
                       id="password"
                       placeholder="Your Password"
                       className="mt-2 block w-full rounded-md border border-gray-200 bg-white px-4 py-2 text-gray-700 placeholder-gray-400 focus:border-[#18d860] focus:outline-none focus:ring focus:ring-[#18d860] focus:ring-opacity-40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:placeholder-gray-600 dark:focus:border-[#18d860]"
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
 
                   <div className="mt-6">
-                    <button className="w-full transform rounded-md bg-[#18d860] px-4 py-2 tracking-wide text-white transition-colors duration-200 hover:bg-[#18d860] focus:bg-[#18d860] focus:outline-none focus:ring focus:ring-[#18d860] focus:ring-opacity-50">
+                    <button
+                      type="button"
+                      className="w-full transform rounded-md bg-[#18d860] px-4 py-2 tracking-wide text-white transition-colors duration-200 hover:bg-[#18d860] focus:bg-[#18d860] focus:outline-none focus:ring focus:ring-[#18d860] focus:ring-opacity-50"
+                      onClick={() => onSubmit()}
+                    >
                       Sign in
                     </button>
                   </div>
