@@ -2,12 +2,24 @@ import { DiscoveryModule } from '@nestjs/core'
 import React from 'react'
 import AdminNav from '../../components/admin/AdminNav'
 import AdminSideBar from '../../components/admin/AdminSideBar'
+import { getAllSongs } from '../api/axios/songs'
+import { Song } from '../../type/Song'
+import { millisToMinutesAndSeconds } from '../../lib/time'
+import Link from 'next/link'
 type Props = {}
 function Dashboard(props: Props) {
   const [songs, setSongs] = React.useState([])
   const [albums, setAlbums] = React.useState([])
 
-  React.useEffect(() => {})
+  const handleGetSongs = async () => {
+    const { data } = await getAllSongs()
+    setSongs(data)
+  }
+
+  React.useEffect(() => {
+    handleGetSongs()
+  }, [])
+  console.log(songs)
 
   return (
     <div className="flex items-start justify-start">
@@ -16,6 +28,7 @@ function Dashboard(props: Props) {
         <AdminNav />
         <div className="relative mx-10 my-10 overflow-x-auto shadow-md sm:rounded-lg">
           <div className="flex items-center justify-between">
+            <h2 className="p-4 text-[1.5rem] font-bold">Song list</h2>
             <div className="p-4">
               <label htmlFor="table-search" className="sr-only">
                 Search
@@ -43,7 +56,6 @@ function Dashboard(props: Props) {
                 />
               </div>
             </div>
-            <h2 className="p-4 text-[1.5rem] font-bold">Song list</h2>
           </div>
 
           <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
@@ -79,40 +91,49 @@ function Dashboard(props: Props) {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
-                <td className="w-4 p-4">
-                  <div className="flex items-center">
-                    <input
-                      id="checkbox-table-search-1"
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-                    />
-                    <label
-                      htmlFor="checkbox-table-search-1"
-                      className="sr-only"
-                    >
-                      checkbox
-                    </label>
-                  </div>
-                </td>
-                <th
-                  scope="row"
-                  className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+              {songs.map((song) => (
+                <tr
+                  key={song._id}
+                  className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
                 >
-                  Apple MacBook Pro 17"
-                </th>
-                <td className="px-6 py-4">Sliver</td>
-                <td className="px-6 py-4">Laptop</td>
-                <td className="px-6 py-4">$2999</td>
-                <td className="px-6 py-4 text-right">
-                  <button className="font-medium text-blue-600 hover:underline dark:text-blue-500">
-                    Edit
-                  </button>
-                  <button className="font-medium text-blue-600 hover:underline dark:text-blue-500">
-                    Delete
-                  </button>
-                </td>
-              </tr>
+                  <td className="w-4 p-4">
+                    <div className="flex items-center">
+                      <input
+                        id="checkbox-table-search-1"
+                        type="checkbox"
+                        className="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                      />
+                      <label
+                        htmlFor="checkbox-table-search-1"
+                        className="sr-only"
+                      >
+                        checkbox
+                      </label>
+                    </div>
+                  </td>
+                  <th
+                    scope="row"
+                    className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+                  >
+                    {song.name}
+                  </th>
+                  <td className="px-6 py-4">{song.singer}</td>
+                  <td className="px-6 py-4">{song.playlist}</td>
+                  <td className="px-6 py-4">
+                    {millisToMinutesAndSeconds(song.duration)}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <Link href={`dashboard/${song._id}`}>
+                      <button className="px-4 font-medium text-blue-600 hover:underline dark:text-blue-500">
+                        Edit
+                      </button>
+                    </Link>
+                    <button className="font-medium text-blue-600 hover:underline dark:text-blue-500">
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

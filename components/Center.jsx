@@ -158,52 +158,6 @@ const Center = () => {
             </button>
           </div>
         </div>
-        <div
-          id="dropdown"
-          className={`z-10  ${
-            isActive ? 'block' : 'hidden'
-          } w-full divide-y divide-gray-100 rounded bg-white shadow dark:bg-gray-700`}
-        >
-          <ul
-            className="py-1 text-sm text-gray-700 dark:text-gray-200"
-            aria-labelledby="dropdownDefault"
-          >
-            <li>
-              <Link href={'/dashboard'}>
-                <div
-                  href="/dashboard"
-                  className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                >
-                  Dashboard
-                </div>
-              </Link>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-              >
-                Settings
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-              >
-                Earnings
-              </a>
-            </li>
-            <li>
-              <button
-                className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                onClick={() => signOut()}
-              >
-                Sign out
-              </button>
-            </li>
-          </ul>
-        </div>
       </header>
       <section
         className={`flex items-end space-x-7 bg-gradient-to-b to-black ${color} h-80 w-full pl-5 pt-[4rem] pr-5 text-white`}
