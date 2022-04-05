@@ -1,23 +1,11 @@
-import React from 'react'
-import { getProviders, signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
-function Login({ providers }) {
-  const { data: session, status } = useSession()
-  console.log(session)
+import React from 'react'
+
+const Register = () => {
   return (
     <div className="max-w-500px mx-auto grid h-screen place-content-center text-center ">
       <div className="over-hidden max-h-screen bg-white dark:bg-gray-900 ">
         <div className="flex h-screen justify-center">
-          <div className="hidden bg-cover lg:block lg:w-2/3">
-            <div className="flex h-full items-center  bg-opacity-40 px-20">
-              <img
-                className="h-full"
-                src="https://source.unsplash.com/random?music"
-                alt=""
-              />
-            </div>
-          </div>
-
           <div className="mx-auto flex w-full  max-w-md items-center px-6 lg:w-2/6">
             <div className="flex-1">
               <div className="text-center">
@@ -28,25 +16,13 @@ function Login({ providers }) {
                     alt=""
                   />
                 </div>
-
-                {Object.values(providers).map((provider) => (
-                  <div className="mt-[2rem]" key={provider.name}>
-                    <button
-                      className="text-bold w-full rounded-[20px] bg-[#18d860] py-2 px-6 text-white"
-                      onClick={() => signIn(provider.id, { callbackUrl: '/' })}
-                    >
-                      Login with {provider.name}
-                    </button>
-                  </div>
-                ))}
                 <hr className="mt-5 border-gray-200 dark:border-gray-700"></hr>
               </div>
-
               <div className="mt-8">
                 <form>
                   <div>
                     <label
-                      for="email"
+                      htmlFor="email"
                       className="mb-2 block text-left text-sm text-gray-600 dark:text-gray-200"
                     >
                       Email Address
@@ -63,17 +39,17 @@ function Login({ providers }) {
                   <div className="mt-6">
                     <div className="mb-2 flex justify-between">
                       <label
-                        for="password"
+                        htmlFor="password"
                         className="text-sm text-gray-600 dark:text-gray-200"
                       >
                         Password
                       </label>
                       {/* <a
-                        href="#"
-                        className="text-sm text-gray-400 hover:text-blue-500 hover:underline focus:text-blue-500"
-                      >
-                        Forgot password?
-                      </a> */}
+                    href="#"
+                    className="text-sm text-gray-400 hover:text-blue-500 hover:underline focus:text-blue-500"
+                  >
+                    Forgot password?
+                  </a> */}
                     </div>
 
                     <input
@@ -93,14 +69,23 @@ function Login({ providers }) {
                 </form>
 
                 <p className="mt-6 text-center text-sm text-gray-400">
-                  Don&#x27;t have an account yet?{' '}
-                  <Link href="/register">
+                  Already have an account?{' '}
+                  <Link href="/login">
                     <button className="text-[#18d860] hover:underline focus:underline focus:outline-none">
-                      Sign up
+                      Sign in now
                     </button>
                   </Link>
                 </p>
               </div>
+            </div>
+          </div>
+          <div className="hidden bg-cover lg:block lg:w-2/3">
+            <div className="flex h-full items-center  bg-opacity-40 px-20">
+              <img
+                className="h-full"
+                src="https://source.unsplash.com/random?music"
+                alt=""
+              />
             </div>
           </div>
         </div>
@@ -109,12 +94,4 @@ function Login({ providers }) {
   )
 }
 
-export default Login
-export async function getServerSideProps(context) {
-  const providers = await getProviders()
-  return {
-    props: {
-      providers,
-    },
-  }
-}
+export default Register
