@@ -4,5 +4,6 @@ export type Song = {
   singer: string
   playlist: string[]
   duration: number
+  image: string
   createdAt: Date
 }

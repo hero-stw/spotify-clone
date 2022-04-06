@@ -1,18 +1,18 @@
+import axios from 'axios'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import AdminNav from '../../components/admin/AdminNav'
 import AdminSideBar from '../../components/admin/AdminSideBar'
 import { Song } from '../../type/Song'
-import { createSong, getSongById, updateSong } from '../api/axios/songs'
+import { createSong } from '../api/axios/songs'
 
 type Props = {}
 
-const SongDetail = (props: Props) => {
-  const [image, setImage] = useState(null)
-  const [createObjectURL, setCreateObjectURL] = useState()
+const AddSong = (props: Props) => {
+  const [imageThumb, setImage] = useState<string>('')
   const router = useRouter()
-  const { id } = router.query
+
   const {
     register,
     handleSubmit,
@@ -23,59 +23,54 @@ const SongDetail = (props: Props) => {
       name: '',
       playlist: '',
       singer: '',
-      duration: 0,
+      duration: '',
       image: '',
     },
   })
+  const handleCreateSong = async (data: Song) => {
+    const response = await createSong(data)
 
-  const handleUpdateSong = async (data: Song) => {
-    const response = await updateSong(id, data)
-
-    if (response.status === 200) {
+    if (response.status === 201) {
     }
   }
   const uploadToClient = (event: any) => {
     if (event.target.files && event.target.files[0]) {
-      const i = event.target.files[0]
-      const reader = new FileReader()
-      reader.onload = (e: any) => {
-        if (e && e.target && e.target.result) {
-          console.log(e?.target?.result)
-        }
-      }
-      reader.readAsDataURL(i)
-      setImage(i)
-      setCreateObjectURL(URL.createObjectURL(i))
-    }
-  }
+      const file = event.target.files[0]
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('upload_preset', 'fckljd3m')
 
-  const handleGetSong = async (id: string) => {
-    const response = await getSongById(id)
-    if (response.status === 200) {
-      reset(response.data)
+      axios({
+        url: 'https://api.cloudinary.com/v1_1/ecma-assignment/image/upload',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-formendcoded',
+        },
+        data: formData,
+      }).then((data) => {
+        console.log(data)
+        setImage(data.data.secure_url)
+      })
     }
   }
   const onSubmit: SubmitHandler<Song> = (data) => {
     const submitData = {
       ...data,
-      image: image,
+      image: imageThumb,
     }
-    return handleUpdateSong(submitData)
+    return handleCreateSong(submitData)
   }
-  useEffect(() => {
-    if (id) {
-      handleGetSong(id)
-    }
-  }, [id])
   return (
     <div className="flex items-start justify-start">
       <AdminSideBar />
       <div className="w-full">
         <AdminNav />
-        <div className="flex w-full items-start justify-between p-10">
-          <form className="w-full p-10" onSubmit={handleSubmit<void>(onSubmit)}>
-            <h1 className="mb-[2rem] text-[1.5rem] font-bold">Edit songs</h1>
-
+        <div className="grid w-full grid-cols-12 items-start justify-between p-10">
+          <form
+            className="col-span-8 w-full p-10"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <h1 className="mb-[2rem] text-[1.5rem] font-bold">Create songs</h1>
             <div className="group relative z-0 mb-6 w-full">
               <input
                 type="text"
@@ -165,13 +160,8 @@ const SongDetail = (props: Props) => {
                   id="floating_company"
                   className="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
                   placeholder=" "
-                  {...register('image', {
-                    required: {
-                      value: true,
-                      message: 'Song thumbnail is required',
-                    },
-                  })}
                   onChange={(e) => uploadToClient(e)}
+                  // {...register('image')}
                 />
                 <label
                   htmlFor="floating_company"
@@ -188,11 +178,11 @@ const SongDetail = (props: Props) => {
               Submit
             </button>
           </form>
-          <div className="w-[40vw]">
+          <div className="col-span-3">
             <img
               src={
-                createObjectURL
-                  ? createObjectURL
+                imageThumb
+                  ? imageThumb
                   : 'https://reactnativecode.com/wp-content/uploads/2018/02/Default_Image_Thumbnail.png'
               }
               alt=""
@@ -205,4 +195,11 @@ const SongDetail = (props: Props) => {
   )
 }
 
-export default SongDetail
+export default AddSong
+function setImage(i: any) {
+  throw new Error('Function not implemented.')
+}
+
+function setCreateObjectURL(arg0: string) {
+  throw new Error('Function not implemented.')
+}

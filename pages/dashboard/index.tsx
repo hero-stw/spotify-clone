@@ -2,18 +2,39 @@ import { DiscoveryModule } from '@nestjs/core'
 import React from 'react'
 import AdminNav from '../../components/admin/AdminNav'
 import AdminSideBar from '../../components/admin/AdminSideBar'
-import { getAllSongs } from '../api/axios/songs'
+import { deleteSong, getAllSongs } from '../api/axios/songs'
 import { Song } from '../../type/Song'
 import { millisToMinutesAndSeconds } from '../../lib/time'
 import Link from 'next/link'
+import { PlusCircleIcon } from '@heroicons/react/solid'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+
 type Props = {}
 function Dashboard(props: Props) {
+  const MySwal = withReactContent(Swal)
   const [songs, setSongs] = React.useState([])
   const [albums, setAlbums] = React.useState([])
 
   const handleGetSongs = async () => {
     const { data } = await getAllSongs()
     setSongs(data)
+  }
+  const handleDeleteSong = async (id: string) => {
+    MySwal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setSongs(songs.filter((song) => song._id !== id))
+        MySwal.fire('Deleted!', 'Your file has been deleted.', 'success')
+      }
+    })
   }
 
   React.useEffect(() => {
@@ -28,7 +49,15 @@ function Dashboard(props: Props) {
         <AdminNav />
         <div className="relative mx-10 my-10 overflow-x-auto shadow-md sm:rounded-lg">
           <div className="flex items-center justify-between">
-            <h2 className="p-4 text-[1.5rem] font-bold">Song list</h2>
+            <div className="flex items-center justify-start space-x-5 ">
+              <h2 className="p-4 text-[1.5rem] font-bold">Song list</h2>
+              <Link href="/dashboard/add">
+                <button>
+                  <PlusCircleIcon className="h-8 w-8" />
+                </button>
+              </Link>
+            </div>
+
             <div className="p-4">
               <label htmlFor="table-search" className="sr-only">
                 Search
@@ -42,9 +71,9 @@ function Dashboard(props: Props) {
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                      clip-rule="evenodd"
+                      clipRule="evenodd"
                     ></path>
                   </svg>
                 </div>
@@ -91,7 +120,7 @@ function Dashboard(props: Props) {
               </tr>
             </thead>
             <tbody>
-              {songs.map((song) => (
+              {songs.map((song: Song) => (
                 <tr
                   key={song._id}
                   className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
@@ -115,6 +144,7 @@ function Dashboard(props: Props) {
                     scope="row"
                     className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                   >
+                    <img src={song.image} alt="" className="h-10 w-10" />
                     {song.name}
                   </th>
                   <td className="px-6 py-4">{song.singer}</td>
@@ -128,7 +158,10 @@ function Dashboard(props: Props) {
                         Edit
                       </button>
                     </Link>
-                    <button className="font-medium text-blue-600 hover:underline dark:text-blue-500">
+                    <button
+                      className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                      onClick={() => handleDeleteSong(song._id)}
+                    >
                       Delete
                     </button>
                   </td>
