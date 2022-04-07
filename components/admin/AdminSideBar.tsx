@@ -59,7 +59,7 @@ const AdminSideBar = (props: Props) => {
               <span className="mx-4 font-medium">Songs</span>
             </div>
           </Link>
-          <Link href="/dashboard/playlist">
+          <Link href="/dashboard/playlists">
             <div className="mt-5 flex transform items-center rounded-md px-4 py-2 text-gray-600 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200">
               <svg
                 className="h-5 w-5"

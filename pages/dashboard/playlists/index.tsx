@@ -1,23 +1,22 @@
-import React from 'react'
-import AdminNav from '../../components/admin/AdminNav'
-import AdminSideBar from '../../components/admin/AdminSideBar'
-import { deleteSong, getAllSongs } from '../api/axios/songs'
-import { Song } from '../../type/Song'
-import { millisToMinutesAndSeconds } from '../../lib/time'
-import Link from 'next/link'
 import { PlusCircleIcon } from '@heroicons/react/solid'
+import Link from 'next/link'
+import React from 'react'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import AdminNav from '../../../components/admin/AdminNav'
+import AdminSideBar from '../../../components/admin/AdminSideBar'
+import { Playlist } from '../../../type/Playlist'
+import { deletePlaylist, getPlaylists } from '../../api/axios/playlists'
 
 type Props = {}
-function Dashboard(props: Props) {
-  const MySwal = withReactContent(Swal)
-  const [songs, setSongs] = React.useState([])
-  const [albums, setAlbums] = React.useState([])
 
-  const handleGetSongs = async () => {
-    const { data } = await getAllSongs()
-    setSongs(data)
+const Playlists = (props: Props) => {
+  const MySwal = withReactContent(Swal)
+  const [playlists, setPlaylists] = React.useState([])
+
+  const handleGetPlaylist = async () => {
+    const { data } = await getPlaylists()
+    setPlaylists(data)
   }
   const handleDeleteSong = (id: string) => {
     MySwal.fire({
@@ -30,15 +29,15 @@ function Dashboard(props: Props) {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        deleteSong(id)
-        setSongs(songs.filter((song) => song._id !== id))
+        deletePlaylist(id)
+        setPlaylists(playlists.filter((playlist) => playlist._id !== id))
         MySwal.fire('Deleted!', 'Your file has been deleted.', 'success')
       }
     })
   }
 
   React.useEffect(() => {
-    handleGetSongs()
+    handleGetPlaylist()
   }, [])
 
   return (
@@ -119,7 +118,7 @@ function Dashboard(props: Props) {
               </tr>
             </thead>
             <tbody>
-              {songs.map((song: Song) => (
+              {playlists.map((song: Playlist) => (
                 <tr
                   key={song._id}
                   className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
@@ -143,14 +142,12 @@ function Dashboard(props: Props) {
                     scope="row"
                     className="flex items-center justify-start space-x-3 whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                   >
-                    <img src={song.image} alt="" className="h-10 w-10" />
-                    <span>{song.name}</span>
+                    <img src="" alt="" className="h-10 w-10" />
+                    <span></span>
                   </th>
-                  <td className="px-6 py-4">{song.singer}</td>
-                  <td className="px-6 py-4">{song.playlist}</td>
-                  <td className="px-6 py-4">
-                    {millisToMinutesAndSeconds(song.duration)}
-                  </td>
+                  <td className="px-6 py-4"></td>
+                  <td className="px-6 py-4"></td>
+                  <td className="px-6 py-4"></td>
                   <td className="px-6 py-4 text-right">
                     <Link href={`dashboard/${song._id}`}>
                       <button className="px-4 font-medium text-blue-600 hover:underline dark:text-blue-500">
@@ -173,4 +170,5 @@ function Dashboard(props: Props) {
     </div>
   )
 }
-export default Dashboard
+
+export default Playlists

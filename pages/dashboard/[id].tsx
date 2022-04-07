@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -9,7 +10,7 @@ import { createSong, getSongById, updateSong } from '../api/axios/songs'
 type Props = {}
 
 const SongDetail = (props: Props) => {
-  const [image, setImage] = useState(null)
+  const [imageThumb, setImage] = useState(null)
   const [createObjectURL, setCreateObjectURL] = useState()
   const router = useRouter()
   const { id } = router.query
@@ -36,16 +37,22 @@ const SongDetail = (props: Props) => {
   }
   const uploadToClient = (event: any) => {
     if (event.target.files && event.target.files[0]) {
-      const i = event.target.files[0]
-      const reader = new FileReader()
-      reader.onload = (e: any) => {
-        if (e && e.target && e.target.result) {
-          console.log(e?.target?.result)
-        }
-      }
-      reader.readAsDataURL(i)
-      setImage(i)
-      setCreateObjectURL(URL.createObjectURL(i))
+      const file = event.target.files[0]
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('upload_preset', 'fckljd3m')
+
+      axios({
+        url: 'https://api.cloudinary.com/v1_1/ecma-assignment/image/upload',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-formendcoded',
+        },
+        data: formData,
+      }).then((data) => {
+        console.log(data)
+        setImage(data.data.secure_url)
+      })
     }
   }
 
@@ -53,12 +60,13 @@ const SongDetail = (props: Props) => {
     const response = await getSongById(id)
     if (response.status === 200) {
       reset(response.data)
+      setImage(response.data.image)
     }
   }
   const onSubmit: SubmitHandler<Song> = (data) => {
     const submitData = {
       ...data,
-      image: image,
+      image: imageThumb,
     }
     return handleUpdateSong(submitData)
   }
@@ -191,8 +199,8 @@ const SongDetail = (props: Props) => {
           <div className="w-[40vw]">
             <img
               src={
-                createObjectURL
-                  ? createObjectURL
+                imageThumb
+                  ? imageThumb
                   : 'https://reactnativecode.com/wp-content/uploads/2018/02/Default_Image_Thumbnail.png'
               }
               alt=""

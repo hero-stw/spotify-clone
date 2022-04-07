@@ -6,10 +6,13 @@ import AdminNav from '../../components/admin/AdminNav'
 import AdminSideBar from '../../components/admin/AdminSideBar'
 import { Song } from '../../type/Song'
 import { createSong } from '../api/axios/songs'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 type Props = {}
 
 const AddSong = (props: Props) => {
+  const MySwal = withReactContent(Swal)
   const [imageThumb, setImage] = useState<string>('')
   const router = useRouter()
 
@@ -28,10 +31,13 @@ const AddSong = (props: Props) => {
     },
   })
   const handleCreateSong = async (data: Song) => {
-    const response = await createSong(data)
-
-    if (response.status === 201) {
-    }
+    createSong(data)
+      .then(() => {
+        MySwal.fire('Success!', 'Add new song successfully!', 'success')
+      })
+      .then(() => {
+        router.push('/dashboard')
+      })
   }
   const uploadToClient = (event: any) => {
     if (event.target.files && event.target.files[0]) {
@@ -48,7 +54,6 @@ const AddSong = (props: Props) => {
         },
         data: formData,
       }).then((data) => {
-        console.log(data)
         setImage(data.data.secure_url)
       })
     }
