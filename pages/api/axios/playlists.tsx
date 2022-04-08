@@ -4,7 +4,6 @@ import instance from './instance'
 export const getPlaylists = () => {
   return instance.get('/playlists')
 }
-
 export const getPlaylist = (id: string) => {
   return instance.get(`/playlists/${id}`)
 }

@@ -41,6 +41,9 @@ function Dashboard(props: Props) {
     handleGetSongs()
   }, [])
 
+  console.log(songs);
+
+
   return (
     <div className="flex items-start justify-start">
       <AdminSideBar />
@@ -50,7 +53,7 @@ function Dashboard(props: Props) {
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-start space-x-5 ">
               <h2 className="p-4 text-[1.5rem] font-bold">Song list</h2>
-              <Link href="/dashboard/add">
+              <Link href="/dashboard/songs/add">
                 <button>
                   <PlusCircleIcon className="h-8 w-8" />
                 </button>
@@ -122,6 +125,7 @@ function Dashboard(props: Props) {
               {songs.map((song: Song) => (
                 <tr
                   key={song._id}
+                  data-key={song._id}
                   className="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
                 >
                   <td className="w-4 p-4">
@@ -152,7 +156,7 @@ function Dashboard(props: Props) {
                     {millisToMinutesAndSeconds(song.duration)}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <Link href={`dashboard/${song._id}`}>
+                    <Link href={`dashboard/songs/${song._id}`}>
                       <button className="px-4 font-medium text-blue-600 hover:underline dark:text-blue-500">
                         Edit
                       </button>

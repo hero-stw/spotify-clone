@@ -4,7 +4,7 @@ export type Playlist = {
   images: [url: string]
   description: string
   owner: {
-    displayName: string
+    display_name: string
   }
   followers: {
     total: number

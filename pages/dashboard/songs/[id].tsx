@@ -2,16 +2,18 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import AdminNav from '../../components/admin/AdminNav'
-import AdminSideBar from '../../components/admin/AdminSideBar'
-import { Song } from '../../type/Song'
-import { createSong, getSongById, updateSong } from '../api/axios/songs'
+import AdminNav from '../../../components/admin/AdminNav'
+import AdminSideBar from '../../../components/admin/AdminSideBar'
+import { Song } from '../../../type/Song'
+import { getSongById, updateSong } from '../../api/axios/songs'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 type Props = {}
 
 const SongDetail = (props: Props) => {
+  const MySwal = withReactContent(Swal)
   const [imageThumb, setImage] = useState(null)
-  const [createObjectURL, setCreateObjectURL] = useState()
   const router = useRouter()
   const { id } = router.query
   const {
@@ -31,7 +33,6 @@ const SongDetail = (props: Props) => {
 
   const handleUpdateSong = async (data: Song) => {
     const response = await updateSong(id, data)
-
     if (response.status === 200) {
     }
   }
@@ -56,9 +57,11 @@ const SongDetail = (props: Props) => {
     }
   }
 
-  const handleGetSong = async (id: string) => {
-    const response = await getSongById(id)
+  const handleGetSong = async (idSong: string | string[]) => {
+    const response = await getSongById(idSong);
+    console.log(response)
     if (response.status === 200) {
+      console.log(response.data);
       reset(response.data)
       setImage(response.data.image)
     }
@@ -68,10 +71,22 @@ const SongDetail = (props: Props) => {
       ...data,
       image: imageThumb,
     }
-    return handleUpdateSong(submitData)
+    return handleUpdateSong(submitData).then(() => {
+      MySwal.fire('Success!', 'Update song successfully!', 'success')
+      router.push('/dashboard')
+    }).catch((err) => {
+      MySwal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Can not update this song!',
+      })
+      console.log(err);
+
+    })
   }
   useEffect(() => {
     if (id) {
+      console.log("id la: " + id);
       handleGetSong(id)
     }
   }, [id])

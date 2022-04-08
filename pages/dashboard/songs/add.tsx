@@ -2,10 +2,10 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import AdminNav from '../../components/admin/AdminNav'
-import AdminSideBar from '../../components/admin/AdminSideBar'
-import { Song } from '../../type/Song'
-import { createSong } from '../api/axios/songs'
+import AdminNav from '../../../components/admin/AdminNav'
+import AdminSideBar from '../../../components/admin/AdminSideBar'
+import { Song } from '../../../type/Song'
+import { createSong } from '../../api/axios/songs'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
@@ -34,9 +34,16 @@ const AddSong = (props: Props) => {
     createSong(data)
       .then(() => {
         MySwal.fire('Success!', 'Add new song successfully!', 'success')
-      })
-      .then(() => {
         router.push('/dashboard')
+      })
+      .catch((err) => {
+        MySwal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Can not add new song!',
+        })
+        console.log(err);
+
       })
   }
   const uploadToClient = (event: any) => {
@@ -166,7 +173,7 @@ const AddSong = (props: Props) => {
                   className="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
                   placeholder=" "
                   onChange={(e) => uploadToClient(e)}
-                  // {...register('image')}
+                // {...register('image')}
                 />
                 <label
                   htmlFor="floating_company"
