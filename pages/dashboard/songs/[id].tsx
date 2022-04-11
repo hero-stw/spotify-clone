@@ -14,6 +14,8 @@ type Props = {}
 const SongDetail = (props: Props) => {
   const MySwal = withReactContent(Swal)
   const [imageThumb, setImage] = useState(null)
+  const [playlists, setPlaylists] = useState<any[]>([])
+
   const router = useRouter()
   const { id } = router.query
   const {
@@ -58,10 +60,10 @@ const SongDetail = (props: Props) => {
   }
 
   const handleGetSong = async (idSong: string | string[]) => {
-    const response = await getSongById(idSong);
+    const response = await getSongById(idSong)
     console.log(response)
     if (response.status === 200) {
-      console.log(response.data);
+      console.log(response.data)
       reset(response.data)
       setImage(response.data.image)
     }
@@ -71,22 +73,31 @@ const SongDetail = (props: Props) => {
       ...data,
       image: imageThumb,
     }
-    return handleUpdateSong(submitData).then(() => {
-      MySwal.fire('Success!', 'Update song successfully!', 'success')
-      router.push('/dashboard')
-    }).catch((err) => {
-      MySwal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Can not update this song!',
+    return handleUpdateSong(submitData)
+      .then(() => {
+        MySwal.fire('Success!', 'Update song successfully!', 'success')
+        router.push('/dashboard')
       })
-      console.log(err);
-
-    })
+      .catch((err) => {
+        MySwal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Can not update this song!',
+        })
+        console.log(err)
+      })
+  }
+  const handleGetPlaylist = async () => {
+    const res = await axios.get('http://localhost:8000/api/playlists')
+    setPlaylists(res.data)
   }
   useEffect(() => {
+    handleGetPlaylist()
+  }, [])
+  console.log(playlists)
+  useEffect(() => {
     if (id) {
-      console.log("id la: " + id);
+      console.log('id la: ' + id)
       handleGetSong(id)
     }
   }, [id])
@@ -118,27 +129,37 @@ const SongDetail = (props: Props) => {
               >
                 Name
               </label>
+              <p className="mt-2 text-sm text-red-600 dark:text-red-500">
+                {errors.name?.message}
+              </p>
             </div>
             <div className="grid xl:grid-cols-2 xl:gap-6">
               <div className="group relative z-0 mb-6 w-full">
-                <input
-                  type="text"
-                  id="floating_first_name"
+                <label
+                  htmlFor="playlist"
+                  className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-600 dark:text-gray-400 peer-focus:dark:text-blue-500"
+                >
+                  Playlist
+                </label>
+                <select
+                  id="playlist"
                   className="peer block w-full appearance-none border-0 border-b-2 border-gray-300 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-blue-600 focus:outline-none focus:ring-0 dark:border-gray-600 dark:text-white dark:focus:border-blue-500"
-                  placeholder=" "
                   {...register('playlist', {
                     required: {
                       value: true,
                       message: 'Playlist is required',
                     },
                   })}
-                />
-                <label
-                  htmlFor="floating_first_name"
-                  className="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-blue-600 dark:text-gray-400 peer-focus:dark:text-blue-500"
                 >
-                  Playlist
-                </label>
+                  {playlists.map((playlist) => (
+                    <option key={playlist.id} value={playlist.id}>
+                      {playlist.name}
+                    </option>
+                  ))}
+                </select>
+                <p className="mt-2 text-sm text-red-600 dark:text-red-500">
+                  {errors.playlist?.message}
+                </p>
               </div>
               <div className="group relative z-0 mb-6 w-full">
                 <input
@@ -159,6 +180,9 @@ const SongDetail = (props: Props) => {
                 >
                   Artist
                 </label>
+                <p className="mt-2 text-sm text-red-600 dark:text-red-500">
+                  {errors.singer?.message}
+                </p>
               </div>
             </div>
             <div className="grid xl:grid-cols-2 xl:gap-6">
@@ -181,6 +205,9 @@ const SongDetail = (props: Props) => {
                 >
                   Duration
                 </label>
+                <p className="mt-2 text-sm text-red-600 dark:text-red-500">
+                  {errors.singer?.message}
+                </p>
               </div>
               <div className="group relative z-0 mb-6 w-full">
                 <input

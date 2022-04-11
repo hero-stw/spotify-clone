@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import useSpotify from './useSpotify'
 import { playlistIdState } from '../atom/playlistAtom'
 import { useRecoilState } from 'recoil'
@@ -19,12 +19,12 @@ function usePlaylistInfomation() {
           }
         ).then((res) => res.json())
 
-        setPlaylist(playlistInfo)
+        setPlaylists(playlistInfo)
       }
     }
     fetchPlaylistInfo()
   }, [playlistId, spotifyApi])
-  return playlist
+  return playlists
 }
 
 export default usePlaylistInfomation

@@ -1,22 +1,28 @@
 import React from 'react'
 import AdminNav from '../../components/admin/AdminNav'
 import AdminSideBar from '../../components/admin/AdminSideBar'
-import { deleteSong, getAllSongs } from '../api/axios/songs'
+import {
+  deleteSong,
+  getAllSongs,
+  getSongWithPagination,
+  searchSong,
+} from '../api/axios/songs'
 import { Song } from '../../type/Song'
 import { millisToMinutesAndSeconds } from '../../lib/time'
 import Link from 'next/link'
 import { PlusCircleIcon } from '@heroicons/react/solid'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { debounce } from 'lodash'
 
 type Props = {}
 function Dashboard(props: Props) {
   const MySwal = withReactContent(Swal)
   const [songs, setSongs] = React.useState([])
-  const [albums, setAlbums] = React.useState([])
+  const [search, setSearch] = React.useState('')
 
   const handleGetSongs = async () => {
-    const { data } = await getAllSongs()
+    const { data } = await getSongWithPagination(1, 3)
     setSongs(data)
   }
   const handleDeleteSong = (id: string) => {
@@ -36,14 +42,18 @@ function Dashboard(props: Props) {
       }
     })
   }
-
+  const handleSearch = async () => {
+    const res = await searchSong(search)
+    setSongs(res.data)
+  }
+  const debouncedHandleSearch = debounce(handleSearch, 100)
   React.useEffect(() => {
     handleGetSongs()
   }, [])
 
-  console.log(songs);
-
-
+  React.useEffect(() => {
+    debouncedHandleSearch()
+  }, [])
   return (
     <div className="flex items-start justify-start">
       <AdminSideBar />
@@ -84,6 +94,7 @@ function Dashboard(props: Props) {
                   id="table-search"
                   className="block w-80 rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500  dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   placeholder="Search for items"
+                  onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
             </div>
@@ -173,6 +184,94 @@ function Dashboard(props: Props) {
             </tbody>
           </table>
         </div>
+        <nav
+          aria-label="Page navigation example"
+          className="mx-10 pt-4 pb-3 text-right "
+        >
+          <ul className="inline-flex items-center -space-x-px">
+            <li>
+              <a
+                href="#"
+                className="ml-0 block rounded-l-lg border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >
+                <span className="sr-only">Previous</span>
+                <svg
+                  className="h-5 w-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >
+                1
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >
+                2
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                aria-current="page"
+                className="z-10 border border-blue-300 bg-blue-50 py-2 px-3 leading-tight text-blue-600 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
+              >
+                3
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >
+                4
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >
+                5
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                className="block rounded-r-lg border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >
+                <span className="sr-only">Next</span>
+                <svg
+                  className="h-5 w-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   )

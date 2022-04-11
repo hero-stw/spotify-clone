@@ -4,16 +4,11 @@ import { useRecoilState } from 'recoil'
 import { currentTrackIdState, isPlayingState } from '../atom/songAtom'
 import useSpotify from '../hooks/useSpotify'
 import useSongInfomation from '../hooks/useSongInfo'
-import Previous from './icons/Previous'
+import usePlaylistInformation from '../hooks/usePlaylistInfo'
 import Switch from './icons/Switch'
-import NextButton from './icons/Next'
 import Repeat from './icons/Repeat'
 import Play from './icons/Play'
 import Pause from './icons/Pause'
-import SpotifyWebPlayer, {
-  STATUS,
-  CallbackState,
-} from 'react-spotify-web-playback'
 import {
   FastForwardIcon,
   RewindIcon,
@@ -31,21 +26,25 @@ function Player() {
     useRecoilState(currentTrackIdState)
   const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState)
   const [volume, setVolume] = useState(50)
-  const [player, setPlayer] = useState(undefined)
-  const [is_active, setActive] = useState(false)
-  const [URIs, setURIs] = useState(['spotify:album:51QBkcL7S3KYdXSSA0zM9R'])
   const songInfo = useSongInfomation()
+  const playlistInfo = usePlaylistInformation()
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${session.user.accessToken}`,
+  }
+  const resetSongInfo = () => {
+    spotifyApi.getMyCurrentPlayingTrack().then((data) => {
+      console.log('Playing', data.body?.item)
+      setCurrentIdTrack(data.body?.item.id)
 
+      spotifyApi.getMyCurrentPlaybackState().then((data) => {
+        setIsPlaying(data.body?.is_playing)
+      })
+    })
+  }
   const fetchCurrentSong = () => {
     if (!songInfo) {
-      spotifyApi.getMyCurrentPlayingTrack().then((data) => {
-        console.log('Playing', data.body?.item)
-        setCurrentIdTrack(data.body?.item.id)
-
-        spotifyApi.getMyCurrentPlaybackState().then((data) => {
-          setIsPlaying(data.body?.is_playing)
-        })
-      })
+      resetSongInfo()
     }
   }
   const handlePlayPause = () => {
@@ -63,6 +62,48 @@ function Player() {
     debounce((volume) => spotifyApi.setVolume(volume), 100),
     []
   )
+  const handlePlayingNextSong = async () => {
+    const response = await axios
+      .put(
+        'https://api.spotify.com/v1/me/player/play',
+        {
+          context_uri: playlistInfo.uri,
+          offset: {
+            position:
+              songInfo.track_number + 1 > playlistInfo.tracks.total
+                ? 0
+                : songInfo.track_number + 1,
+          },
+          position_ms: 0,
+        },
+        {
+          headers,
+        }
+      )
+      .then(() => {
+        resetSongInfo()
+      })
+  }
+  const handlePlayingPrevSong = async () => {
+    const response = await axios
+      .put(
+        'https://api.spotify.com/v1/me/player/play',
+        {
+          context_uri: playlistInfo.uri,
+          offset: {
+            position:
+              songInfo.track_number - 1 < 0 ? 0 : songInfo.track_number - 1,
+          },
+          position_ms: 0,
+        },
+        {
+          headers,
+        }
+      )
+      .then(() => {
+        resetSongInfo()
+      })
+  }
 
   useEffect(() => {
     if (spotifyApi.getAccessToken() && !currentIdTrack) {
@@ -77,29 +118,6 @@ function Player() {
     }
   }, [volume])
 
-  const handlePlayingNextSong = async () => {
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${session.user.accessToken}`,
-    }
-    const response = await axios
-      .put(
-        'https://api.spotify.com/v1/me/player/play',
-        {
-          context_uri: 'spotify:album:0w1dwXfG5z6Xjjgj524JkD',
-          offset: {
-            position: 5,
-          },
-          position_ms: 0,
-        },
-        {
-          headers,
-        }
-      )
-      .then((res) => {
-        console.log(res)
-      })
-  }
   return (
     <div>
       <div className="grid h-24 grid-cols-3 bg-gradient-to-br from-black to-gray-800 px-2 text-xs text-white opacity-95 md:px-8 md:text-base">
@@ -121,9 +139,12 @@ function Player() {
 
         <div className="flex flex-col items-center justify-center">
           <div className="mx-auto flex items-center">
-            <div className="flex space-x-6">
+            <div className="flex items-center space-x-6">
               <Switch />
-              <RewindIcon className="h-8 w-8" />
+              <RewindIcon
+                className="h-8 w-8"
+                onClick={() => handlePlayingPrevSong()}
+              />
             </div>
             <div>
               <button

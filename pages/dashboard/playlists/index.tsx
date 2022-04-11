@@ -143,18 +143,14 @@ const Playlists = (props: Props) => {
                     scope="row"
                     className="flex items-center justify-start space-x-3 whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                   >
-                    <img
-                      src={'item.images[0]?.url'}
-                      alt=""
-                      className="h-10 w-10"
-                    />
+                    <img src={item.images.url} alt="" className="h-10 w-10" />
                     <span>{item.name}</span>
                   </th>
-                  <td className="px-6 py-4">{}</td>
+                  <td className="px-6 py-4">{item.owner.display_name}</td>
                   <td className="px-6 py-4">{item.followers}</td>
-                  <td className="px-6 py-4">{item.tracks}</td>
+                  <td className="px-6 py-4">{item.tracks.total}</td>
                   <td className="px-6 py-4 text-right">
-                    <Link href={`dashboard/playlists/${item._id}`}>
+                    <Link href={`/dashboard/playlists/${item._id}`}>
                       <button className="px-4 font-medium text-blue-600 hover:underline dark:text-blue-500">
                         Edit
                       </button>
