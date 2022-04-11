@@ -8,8 +8,10 @@
   },
   "dependencies": {
     "@heroicons/react": "^1.0.5",
+    "@types/styled-components": "^5.1.25",
     "axios": "^0.26.1",
     "lodash": "^4.17.21",
+    "memoize-one": "^6.0.0",
     "next": "^12.1.0",
     "next-auth": "^4.0.0-beta.7",
     "next-cli": "^1.0.0",
@@ -17,8 +19,10 @@
     "react-dom": "^17.0.2",
     "react-hook-form": "^7.29.0",
     "react-router-dom": "^6.2.2",
+    "react-spotify-web-playback": "^0.9.1",
     "recoil": "^0.6.1",
     "spotify-web-api-node": "^5.0.2",
+    "styled-components": "^5.3.5",
     "sweetalert2": "^11.4.8",
     "sweetalert2-react-content": "^4.2.0",
     "tailwind-scrollbar-hide": "^1.1.7"

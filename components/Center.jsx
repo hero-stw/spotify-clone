@@ -44,13 +44,13 @@ const Center = () => {
     }
   }, [spotifyApi, playlistId])
 
-  const getNewReleases = async () => {
-    const response = await spotifyApi.getNewReleases()
-    console.log(response)
-  }
-  useEffect(() => {
-    getNewReleases()
-  })
+  // const getNewReleases = async () => {
+  //   const response = await spotifyApi.getNewReleases()
+  //   console.log(response)
+  // }
+  // useEffect(() => {
+  //   getNewReleases()
+  // })
 
   return (
     <div className="relative h-screen flex-grow overflow-y-scroll scrollbar-hide">

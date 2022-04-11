@@ -39,7 +39,7 @@ const Playlists = (props: Props) => {
   React.useEffect(() => {
     handleGetPlaylist()
   }, [])
-  console.log(playlists);
+  console.log(playlists)
 
   return (
     <div className="flex items-start justify-start">
@@ -103,7 +103,6 @@ const Playlists = (props: Props) => {
                 </th>
                 <th scope="col" className="px-6 py-3">
                   Playlist
-
                 </th>
                 <th scope="col" className="px-6 py-3">
                   Owner
@@ -144,10 +143,14 @@ const Playlists = (props: Props) => {
                     scope="row"
                     className="flex items-center justify-start space-x-3 whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                   >
-                    <img src={item.images[0]?.url} alt="" className="h-10 w-10" />
+                    <img
+                      src={'item.images[0]?.url'}
+                      alt=""
+                      className="h-10 w-10"
+                    />
                     <span>{item.name}</span>
                   </th>
-                  <td className="px-6 py-4">{item.owner.display_name}</td>
+                  <td className="px-6 py-4">{}</td>
                   <td className="px-6 py-4">{item.followers}</td>
                   <td className="px-6 py-4">{item.tracks}</td>
                   <td className="px-6 py-4 text-right">
