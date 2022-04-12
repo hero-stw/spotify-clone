@@ -26,7 +26,7 @@ function Sidebar() {
     }
   }, [session, spotifyApi])
   return (
-    <div className="hidden h-screen space-y-4 overflow-y-scroll border-r border-gray-900 p-5 pb-36 text-xs text-gray-500 scrollbar-hide sm:max-w-[12rem] md:block lg:block lg:max-w-[15rem] lg:text-sm">
+    <div className="hidden h-screen min-w-[12vw] space-y-4 overflow-y-scroll border-r border-gray-900 p-5 pb-36 text-xs text-gray-500 scrollbar-hide sm:max-w-[12rem] md:block lg:block lg:max-w-[15rem] lg:text-sm">
       <Link href={'/'} className="duration-300 hover:text-white">
         <div className="flex items-center space-x-2">
           <HomeIcon className="h-[24px] w-[24px]" />

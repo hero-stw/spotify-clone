@@ -13,7 +13,7 @@ type Props = {}
 
 const SongDetail = (props: Props) => {
   const MySwal = withReactContent(Swal)
-  const [imageThumb, setImage] = useState(null)
+  const [imageThumb, setImage] = useState<string>('')
   const [playlists, setPlaylists] = useState<any[]>([])
 
   const router = useRouter()
@@ -97,7 +97,6 @@ const SongDetail = (props: Props) => {
   console.log(playlists)
   useEffect(() => {
     if (id) {
-      console.log('id la: ' + id)
       handleGetSong(id)
     }
   }, [id])

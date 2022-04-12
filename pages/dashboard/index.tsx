@@ -20,9 +20,11 @@ function Dashboard(props: Props) {
   const MySwal = withReactContent(Swal)
   const [songs, setSongs] = React.useState([])
   const [search, setSearch] = React.useState('')
+  const [page, setPage] = React.useState(1)
+  const [totalPage, setTotalPage] = React.useState(3)
 
   const handleGetSongs = async () => {
-    const { data } = await getSongWithPagination(1, 3)
+    const { data } = await getSongWithPagination(page, totalPage)
     setSongs(data)
   }
   const handleDeleteSong = (id: string) => {
@@ -43,17 +45,18 @@ function Dashboard(props: Props) {
     })
   }
   const handleSearch = async () => {
-    const res = await searchSong(search)
+    const res = await searchSong(search, 1, 3)
     setSongs(res.data)
   }
-  const debouncedHandleSearch = debounce(handleSearch, 100)
+  const debouncedHandleSearch = debounce(handleSearch, 300)
+
   React.useEffect(() => {
     handleGetSongs()
   }, [])
 
   React.useEffect(() => {
     debouncedHandleSearch()
-  }, [])
+  }, [search])
   return (
     <div className="flex items-start justify-start">
       <AdminSideBar />
@@ -209,47 +212,22 @@ function Dashboard(props: Props) {
                 </svg>
               </a>
             </li>
-            <li>
-              <a
-                href="#"
-                className="border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >
-                1
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >
-                2
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                aria-current="page"
-                className="z-10 border border-blue-300 bg-blue-50 py-2 px-3 leading-tight text-blue-600 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white"
-              >
-                3
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >
-                4
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >
-                5
-              </a>
-            </li>
+            {Array.from({ length: Math.ceil(songs.length / totalPage) }).map(
+              (_, i) => {
+                const page = i + 1
+                return (
+                  <li key={page}>
+                    <a
+                      href="#"
+                      className="border border-gray-300 bg-white py-2 px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    >
+                      {page}
+                    </a>
+                  </li>
+                )
+              }
+            )}
+
             <li>
               <a
                 href="#"

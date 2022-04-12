@@ -18,6 +18,7 @@ import { VolumeUpIcon as VolumeDownIcon } from '@heroicons/react/outline'
 import { debounce } from 'lodash'
 import { nextSong, spotifyNext } from '../pages/api/axios/player'
 import axios from 'axios'
+import Device from './Device'
 
 function Player() {
   const spotifyApi = useSpotify()
@@ -26,8 +27,9 @@ function Player() {
     useRecoilState(currentTrackIdState)
   const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState)
   const [volume, setVolume] = useState(50)
+  const [repeat, setRepeat] = useState(false)
+  const [shuffle, setShuffle] = useState(false)
   const songInfo = useSongInfomation()
-  const playlistInfo = usePlaylistInformation()
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${session.user.accessToken}`,
@@ -62,6 +64,7 @@ function Player() {
     debounce((volume) => spotifyApi.setVolume(volume), 100),
     []
   )
+  const playlistInfo = usePlaylistInformation()
   const handlePlayingNextSong = async () => {
     const response = await axios
       .put(
@@ -103,6 +106,29 @@ function Player() {
       .then(() => {
         resetSongInfo()
       })
+  }
+  const setShuffleState = async () => {
+    const response = await spotifyApi.setShuffle(true).then(
+      function () {
+        console.log('Shuffle is on.')
+      },
+      function (err) {
+        //if the user making the request is non-premium, a 403 FORBIDDEN response code will be returned
+        console.log('Something went wrong!', err)
+      }
+    )
+  }
+  // Set Repeat Mode On User’s Playback
+  const setRepeatState = async (stack, state) => {
+    const response = await spotifyApi.setRepeat('track').then(
+      function () {
+        console.log('Repeat track.')
+      },
+      function (err) {
+        //if the user making the request is non-premium, a 403 FORBIDDEN response code will be returned
+        console.log('Something went wrong!', err)
+      }
+    )
   }
 
   useEffect(() => {
@@ -175,6 +201,7 @@ function Player() {
         </div>
 
         <div className="flex items-center justify-end space-x-3 pr-5 md:space-x-4">
+          <Device />
           <VolumeDownIcon
             className="button h-6 w-6"
             onClick={() => volume > 0 && setVolume(volume - 10)}

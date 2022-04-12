@@ -1,7 +1,7 @@
 import instance from './instance'
 
 export const getAllSongs = () => {
-  return instance.get('/songs/paginate/1/3')
+  return instance.get('/songs')
 }
 
 export const getSongById = (id: string | undefined | string[]) => {
@@ -19,8 +19,8 @@ export const deleteSong = (id: string | undefined) => {
   return instance.delete(`/songs/${id}`)
 }
 
-export const searchSong = (query: string) => {
-  return instance.post(`/songs/search?q=${query}`)
+export const searchSong = (query: string, page: number, limit: number) => {
+  return instance.post(`/songs/search/${page}/${limit}?q=${query}`)
 }
 export const getSongWithPagination = (page: number, limit: number) => {
   return instance.get(`/songs/paginate/${page}/${limit}`)
